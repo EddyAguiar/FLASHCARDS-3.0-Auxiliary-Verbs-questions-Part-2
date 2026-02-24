@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards · Auxiliary Verbs (questions) · ÁUDIO + PRÁTICA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: linear-gradient(145deg, #dbeafe 0%, #bbd7fb 100%);
+            padding: 24px 18px;
+            color: #1a2e4b;
+        }
+        .container { max-width: 1300px; margin: 0 auto; }
+
+        .master-header {
+            background: #ffffffd9;
+            backdrop-filter: blur(4px);
+            border-radius: 48px 48px 20px 20px;
+            padding: 28px 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 16px 32px -12px #1e3a8a50;
+            border-left: 10px solid #1e4b8a;
+        }
+        .master-header h1 {
+            font-size: 2.6rem;
+            font-weight: 700;
+            color: #1e4b8a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: center;
+        }
+        .subhead {
+            text-align: center;
+            font-size: 1.2rem;
+            background: #d4e6ff;
+            padding: 12px 22px;
+            border-radius: 60px;
+            color: #0e2e4a;
+            font-weight: 500;
+        }
+
+        .audio-speed-panel {
+            background: white;
+            border-radius: 48px;
+            padding: 16px 32px;
+            margin: 24px 0 18px;
+            display: flex;
+            justify-content: center;
+            gap: 28px;
+            flex-wrap: wrap;
+            box-shadow: 0 6px 14px rgba(0,30,70,0.1);
+        }
+        .speed-label { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+        .speed-label input { width: 210px; }
+
+        .filter-panel {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 32px;
+        }
+        .filter-btn {
+            padding: 10px 22px;
+            border-radius: 40px;
+            border: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            background: #2e5c6b;
+            color: white;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 6px 10px #0000001a;
+        }
+        .filter-btn.be { background: #0d6efd; }
+        .filter-btn.do { background: #dc3545; }
+        .filter-btn.have { background: #198754; }
+        .filter-btn.modal { background: #ffc107; color: #1e2b37; }
+        .filter-btn.questions { background: #9b59b6; }
+        .filter-btn.negatives { background: #e67e22; }
+        .filter-btn.emphasis { background: #1abc9c; }
+        .filter-btn.short-answers { background: #34495e; }
+        .filter-btn.all { background: #1e4b8a; }
+        .filter-btn:hover { transform: translateY(-3px); filter: brightness(1.06); }
+
+        .flash-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+            gap: 22px;
+        }
+        .flashcard {
+            background: white;
+            border-radius: 28px;
+            padding: 22px 18px;
+            box-shadow: 0 16px 26px -12px #1f3d5a;
+            cursor: pointer;
+            transition: 0.2s;
+            border-left: 10px solid;
+            display: flex;
+            flex-direction: column;
+        }
+        .flashcard:hover { transform: scale(1.01) translateY(-6px); box-shadow: 0 24px 34px -10px #163f5a; }
+
+        .be { border-color: #0d6efd; }
+        .do { border-color: #dc3545; }
+        .have { border-color: #198754; }
+        .modal { border-color: #ffc107; }
+        .questions { border-color: #9b59b6; }
+        .negatives { border-color: #e67e22; }
+        .emphasis { border-color: #1abc9c; }
+        .short-answers { border-color: #34495e; }
+        .practice { border-color: #9b59b6; }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .badge {
+            background: #ecf4fa;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .audio-group {
+            display: flex;
+            gap: 6px;
+        }
+        .audio-mini {
+            border: none;
+            background: #1e4d6b;
+            color: white;
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .audio-mini.uk { background: #872e6b; }
+        .audio-mini:hover { opacity: 0.8; }
+
+        .content { display: none; margin-top: 14px; }
+        .content.active { display: block; animation: fade 0.3s; }
+        @keyframes fade { 0%{opacity:0; transform:translateY(6px);} 100%{opacity:1;} }
+
+        .question { background: #E3F0FC; border-radius: 24px; padding: 16px; font-weight: 600; margin-bottom: 15px; }
+        .answer, .explanation, .examples, .practice-box, .tip {
+            background: #f7fdfc; border-radius: 20px; padding: 16px; margin: 12px 0; border-left: 8px solid;
+        }
+        .answer { border-color: #1e4b8a; }
+        .explanation { border-color: #0d6efd; background: #e3f0ff; }
+        .examples { border-color: #e67e22; background: #ffefe3; }
+        .practice-box { border-color: #9b59b6; background: #f3e5ff; }
+        .tip { border-color: #f5b342; background: #fff8e7; }
+
+        .example-item { margin: 10px 0; padding-left: 22px; position: relative; }
+        .example-item::before { content: "→"; left: 0; position: absolute; color: #1e4b8a; font-weight: 700; }
+
+        .quiz-options { list-style: none; margin-top: 10px; }
+        .quiz-options li {
+            background: white; border-radius: 40px; padding: 12px 18px; margin-bottom: 8px;
+            border: 2px solid #bdd9e5; font-weight: 500; cursor: pointer; transition: 0.1s;
+        }
+        .quiz-options li:hover { background: #d0e5fc; }
+        .quiz-options .correct { background: #a5e0d0; border-color: #1e4b8a; }
+        .quiz-options .incorrect { background: #f5c2c2; border-color: #c0392b; }
+
+        .practice-answer { display: none; background: #cfe9fc; border-radius: 20px; padding: 14px; margin-top: 12px; }
+        .practice-answer.active { display: block; }
+        .show-btn { background: #7b4b8a; border: none; color: white; padding: 10px 20px; border-radius: 30px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+
+        .hidden { display: none; }
+
+        .score-footer {
+            background: #1e4b6b; color: white; border-radius: 60px; padding: 16px 30px; max-width: 400px;
+            margin: 40px auto 20px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .score-footer button { background: #2f6f8a; border: none; color: white; border-radius: 40px; padding: 10px 24px; font-weight: 700; cursor: pointer; }
+
+        footer { text-align: center; margin-top: 30px; color: #1e4b6b; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="master-header">
+        <h1><i class="fas fa-question-circle"></i> AUXILIARY VERBS · QUESTIONS</h1>
+        <div class="subhead"><i class="fas fa-headphones"></i> ÁUDIO · PERGUNTAS · RESPOSTAS CURTAS · ÊNFASE</div>
+    </div>
+
+    <div class="audio-speed-panel">
+        <div class="speed-label"><i class="fas fa-tachometer-alt"></i> Velocidade áudio:
+            <input type="range" id="rateControl" min="0.5" max="1.5" value="1.0" step="0.05">
+        </div>
+    </div>
+
+    <div class="filter-panel">
+        <button class="filter-btn all" onclick="filterCards('all')">🔵 TODOS</button>
+        <button class="filter-btn be" onclick="filterCards('be')">🔷 VERBO BE</button>
+        <button class="filter-btn do" onclick="filterCards('do')">🔴 DO/DOES/DID</button>
+        <button class="filter-btn have" onclick="filterCards('have')">🟢 HAVE/HAS/HAD</button>
+        <button class="filter-btn modal" onclick="filterCards('modal')">🟡 MODAIS</button>
+        <button class="filter-btn questions" onclick="filterCards('questions')">🟣 QUESTION TAGS</button>
+        <button class="filter-btn negatives" onclick="filterCards('negatives')">🟠 NEGATIVAS</button>
+        <button class="filter-btn emphasis" onclick="filterCards('emphasis')">🔶 ÊNFASE</button>
+        <button class="filter-btn short-answers" onclick="filterCards('short-answers')">⭐ SHORT ANSWERS</button>
+        <button class="filter-btn practice" onclick="filterCards('practice')">🟪 PRÁTICA</button>
+    </div>
+
+    <div class="flash-grid" id="flashGrid"></div>
+
+    <div class="score-footer">
+        <span>✅ <span id="scoreValue">0</span> / <span id="scoreTotal">10</span></span>
+        <button onclick="resetPracticeScore()"><i class="fas fa-undo-alt"></i> reset</button>
+    </div>
+
+    <footer>
+        <i class="fas fa-volume-up"></i> Toque no cartão para navegar · Áudio US/UK · exercícios: identificação, preenchimento, tradução, múltipla escolha, question tags
+    </footer>
+</div>
+
+<script>
+    // -------------------- DADOS: AUXILIARY VERBS (QUESTIONS) --------------------
+    const cardLibrary = [
+        // 0. verb be
+        { cat: 'be', emoji: '🔷', title: 'Verb BE', phrase: 'Are you a teacher?',
+          question: 'Como formar perguntas com BE?', explanation: 'Inverta o verbo be com o sujeito. Para negativas, adicione not.',
+          examples: ['Are you a teacher?', 'Is she coming?', 'Were they at home?', 'Aren’t you ready?'] },
+
+        // 1. do/does/did
+        { cat: 'do', emoji: '🔴', title: 'DO / DOES / DID', phrase: 'Do you like coffee?',
+          question: 'Uso de DO em perguntas?', explanation: 'DO (I/you/we/they), DOES (he/she/it), DID (passado). O verbo principal volta à forma base.',
+          examples: ['Do you like coffee?', 'Does she work here?', 'Did they arrive late?', 'Don’t you understand?'] },
+
+        // 2. have/has/had
+        { cat: 'have', emoji: '🟢', title: 'HAVE / HAS / HAD', phrase: 'Have you finished?',
+          question: 'Perguntas com HAVE (auxiliar)?', explanation: 'Have é auxiliar no present perfect: Have/Has + sujeito + particípio. Had para past perfect.',
+          examples: ['Have you finished?', 'Has she called?', 'Had they left before you arrived?'] },
+
+        // 3. modals
+        { cat: 'modal', emoji: '🟡', title: 'MODAL AUXILIARIES', phrase: 'Can you swim?',
+          question: 'Modais em perguntas?', explanation: 'Can, could, may, might, will, would, shall, should, must. Inverta com o sujeito.',
+          examples: ['Can you swim?', 'Will they come?', 'Should I apologize?', 'Must we go now?'] },
+
+        // 4. question tags
+        { cat: 'questions', emoji: '🟣', title: 'QUESTION TAGS', phrase: 'You are tired, aren’t you?',
+          question: 'Como formar question tags?', explanation: 'Afirmativa + tag negativa; negativa + tag afirmativa. Usa o mesmo auxiliar.',
+          examples: ['You are tired, aren’t you?', 'She doesn’t like it, does she?', 'He can drive, can’t he?', 'They have arrived, haven’t they?'] },
+
+        // 5. negative questions
+        { cat: 'negatives', emoji: '🟠', title: 'NEGATIVE QUESTIONS', phrase: 'Don’t you understand?',
+          question: 'Perguntas negativas: uso?', explanation: 'Expressam surpresa, confirmação, ou opinião. Forma contraída: Don’t, Isn’t, Can’t, Haven’t...',
+          examples: ['Don’t you understand?', 'Isn’t she your friend?', 'Can’t you swim?', 'Haven’t we met before?'] },
+
+        // 6. emphasis with do
+        { cat: 'emphasis', emoji: '🔶', title: 'EMPHATIC DO', phrase: 'I do like ice cream!',
+          question: 'Ênfase com DO?', explanation: 'Usamos do/does/did antes do verbo para enfatizar em afirmações. Em perguntas, já é natural.',
+          examples: ['I do like ice cream!', 'She does work hard.', 'We did see the movie.'] },
+
+        // 7. short answers
+        { cat: 'short-answers', emoji: '⭐', title: 'SHORT ANSWERS', phrase: 'Yes, I do. / No, I haven’t.',
+          question: 'Respostas curtas: estrutura?', explanation: 'Repetimos o auxiliar, sem repetir o verbo principal. Yes + sujeito + auxiliar (afirmativo); No + sujeito + auxiliar + not.',
+          examples: ['Yes, I do.', 'No, she isn’t.', 'Yes, they can.', 'No, we haven’t.'] },
+
+        // --- PRÁTICA (5 tipos) ---
+        { cat: 'practice', emoji: '📝', title: 'Prática · identificação', type: 'ident',
+          question: 'Identifique o auxiliar na pergunta',
+          items: [
+            { q: '"Are you coming to the party?"', correct: 'are', hint: 'verbo be' },
+            { q: '"Does she speak Spanish?"', correct: 'does', hint: 'do/does' },
+            { q: '"Have they finished yet?"', correct: 'have', hint: 'have' }
+          ] },
+
+        { cat: 'practice', emoji: '✏️', title: 'Prática · preenchimento', type: 'fill',
+          question: 'Complete com o auxiliar correto',
+          items: [
+            { q: '___ you like pizza? (interrogativa)', correct: 'Do' },
+            { q: '___ she arrived? (present perfect)', correct: 'Has' },
+            { q: '___ they play tennis? (passado)', correct: 'Did' }
+          ] },
+
+        { cat: 'practice', emoji: '🌐', title: 'Prática · tradução', type: 'trans',
+          question: 'Traduza a pergunta usando auxiliar',
+          items: [
+            { q: 'Você está feliz?', correct: 'Are you happy?' },
+            { q: 'Ela gosta de café?', correct: 'Does she like coffee?' },
+            { q: 'Podemos entrar?', correct: 'Can we come in?' }
+          ] },
+
+        { cat: 'practice', emoji: '❓', title: 'Quiz · múltipla escolha', type: 'quiz',
+          question: 'Escolha a question tag correta',
+          items: [
+            { q: 'You are tired, ___ ?', options: ['aren’t you', 'are you', 'don’t you'], correct: 'aren’t you' },
+            { q: 'She doesn’t drive, ___ ?', options: ['does she', 'doesn’t she', 'is she'], correct: 'does she' },
+            { q: 'They have arrived, ___ ?', options: ['have they', 'haven’t they', 'did they'], correct: 'haven’t they' }
+          ] },
+
+        { cat: 'practice', emoji: '🔗', title: 'Frases com múltiplos auxiliares', type: 'multi',
+          question: 'Observe os auxiliares na frase',
+          items: [
+            { q: 'Do you think she has finished?', translation: 'Você acha que ela terminou?' },
+            { q: 'He doesn’t like it, does he?', translation: 'Ele não gosta disso, gosta?' },
+            { q: 'I did see her, but I haven’t spoken to her.', translation: 'Eu vi sim ela, mas não falei com ela.' }
+          ] }
+    ];
+
+    const grid = document.getElementById('flashGrid');
+    function renderCards() {
+        grid.innerHTML = '';
+        cardLibrary.forEach((card, idx) => {
+            const flash = document.createElement('div');
+            flash.className = `flashcard ${card.cat}`;
+            flash.dataset.cat = card.cat;
+
+            let phraseForAudio = card.phrase || card.items?.[0]?.q || 'auxiliary verbs';
+            let headerHtml = `<div class="card-header">
+                <span class="badge">${card.emoji || '📌'} ${card.title}</span>
+                <div class="audio-group">
+                    <button class="audio-mini us" data-text="${phraseForAudio}">US 🔊</button>
+                    <button class="audio-mini uk" data-text="${phraseForAudio}">UK 🔊</button>
+                </div>
+            </div>`;
+
+            let contentHtml = `<div class="content active"><div class="question">${card.question || 'Toque para ver'}</div></div>`;
+
+            if (card.cat !== 'practice') {
+                contentHtml += `<div class="content"><div class="explanation">${card.explanation || ''}</div></div>`;
+                contentHtml += `<div class="content"><div class="examples">${card.examples.map(e => `<div class="example-item">${e}</div>`).join('')}</div></div>`;
+            } else {
+                let practiceInner = '';
+                card.items.forEach((item, i) => {
+                    practiceInner += `<div class="practice-box" style="margin-bottom: 12px;">`;
+                    practiceInner += `<div><strong>${item.q}</strong></div>`;
+                    if (card.type === 'quiz' && item.options) {
+                        practiceInner += `<ul class="quiz-options">`;
+                        item.options.forEach(opt => {
+                            practiceInner += `<li onclick="handleQuizClick(this, '${item.correct}')">${opt}</li>`;
+                        });
+                        practiceInner += `</ul>`;
+                    } else {
+                        practiceInner += `<button class="show-btn" onclick="togglePracticeAnswer(this)">Mostrar resposta</button>`;
+                    }
+                    let correctDisplay = item.correct || item.translation || item.hint || '';
+                    practiceInner += `<div class="practice-answer">✅ ${correctDisplay}</div>`;
+                    practiceInner += `</div>`;
+                });
+                contentHtml += `<div class="content"><div class="practice-box">${practiceInner || 'exercício interativo'}</div></div>`;
+            }
+
+            flash.innerHTML = headerHtml + contentHtml;
+
+            flash.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') return;
+                const contents = flash.querySelectorAll('.content');
+                let activeIdx = -1;
+                contents.forEach((c, i) => { if (c.classList.contains('active')) activeIdx = i; });
+                contents.forEach(c => c.classList.remove('active'));
+                const next = (activeIdx + 1) % contents.length;
+                contents[next].classList.add('active');
+            });
+
+            grid.appendChild(flash);
+        });
+
+        document.querySelectorAll('.audio-mini').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const text = btn.dataset.text;
+                const isUk = btn.classList.contains('uk');
+                const rate = parseFloat(document.getElementById('rateControl').value) || 1.0;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = isUk ? 'en-GB' : 'en-US';
+                utterance.rate = rate;
+                speechSynthesis.cancel();
+                speechSynthesis.speak(utterance);
+            });
+        });
+    }
+
+    window.togglePracticeAnswer = function(btn) {
+        btn.nextElementSibling.classList.toggle('active');
+        if (event) event.stopPropagation();
+    };
+
+    window.handleQuizClick = function(el, correct) {
+        let parent = el.parentElement;
+        let options = parent.querySelectorAll('li');
+        options.forEach(opt => opt.classList.remove('correct','incorrect'));
+        if (el.textContent.trim() === correct) {
+            el.classList.add('correct');
+            window.correctCount = Math.min((window.correctCount || 0) + 1, 10);
+        } else {
+            el.classList.add('incorrect');
+            options.forEach(opt => { if (opt.textContent.trim() === correct) opt.classList.add('correct'); });
+        }
+        document.getElementById('scoreValue').innerText = window.correctCount || 0;
+        let ans = parent.parentElement.querySelector('.practice-answer');
+        if (ans) ans.classList.add('active');
+        if (event) event.stopPropagation();
+    };
+
+    window.filterCards = function(cat) {
+        document.querySelectorAll('.flashcard').forEach(c => {
+            cat === 'all' ? c.classList.remove('hidden') : (c.classList.contains(cat) ? c.classList.remove('hidden') : c.classList.add('hidden'));
+        });
+    };
+
+    window.resetPracticeScore = function() {
+        window.correctCount = 0;
+        document.getElementById('scoreValue').innerText = '0';
+        document.querySelectorAll('.quiz-options li').forEach(l => l.classList.remove('correct','incorrect'));
+        document.querySelectorAll('.practice-answer').forEach(a => a.classList.remove('active'));
+    };
+
+    document.getElementById('scoreTotal').innerText = '10';
+    window.correctCount = 0;
+
+    renderCards();
+</script>
+<style>
+    .hidden { display: none; }
+    .flashcard .show-btn { background: #7b4b8a; color: white; border: none; border-radius: 30px; padding: 8px 18px; margin: 8px 0; cursor: pointer; font-weight: 600; }
+    .practice-box { background: #efeaff; border-left: 10px solid #9b59b6; padding: 14px; border-radius: 18px; margin: 12px 0; }
+    .practice-box .quiz-options { margin-top: 8px; }
+    i { margin-right: 4px; }
+</style>
+</body>
+</html>
